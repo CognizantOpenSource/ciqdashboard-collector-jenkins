@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: dashboard-collector
+  data:
+    mongodb:
+      uri: mongodb://localhost/dashboard_collector
+jenkins:
+  url: "http://10.120.100.231:8888"
+  username: "idashboard"
+  token : "11a5b80d5d38b6f608951d86cd2966d948"
+scheduler:
+  cron: 0 0/1 * * * *
+  enable: true
+server:
+  port: 9090
+logging:
+  level:
+    com.cognizant.dashboard.data.collectors.jenkins.clients.JenkinsClient: OFF
+
+  pattern:
+    console: '%d{dd-MM-yyyy HH:mm:ss.SSS} %magenta([%thread]) %highlight(%-5level) %logger.%M - %msg%n'
+
