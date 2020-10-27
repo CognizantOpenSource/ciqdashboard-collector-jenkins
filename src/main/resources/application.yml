@@ -3,7 +3,9 @@ spring:
     name: dashboard-collector
   data:
     mongodb:
-      uri: mongodb://localhost/dashboard_collector
+      uri: mongodb://idashboard:${spring.data.mongodb.credents}@10.120.100.231/idashboard
+      credents: ENC(rwQEK1M5vbHwwhhqx6pBDHn4Ut4IrKHbBUsrB0AUR8XHc8GN/Sf4IRVma96OWroe)
+
 jenkins:
   url: "http://10.120.100.231:8888"
   username: "idashboard"
@@ -20,3 +22,7 @@ logging:
   pattern:
     console: '%d{dd-MM-yyyy HH:mm:ss.SSS} %magenta([%thread]) %highlight(%-5level) %logger.%M - %msg%n'
 
+jasypt:
+  encryptor:
+    algorithm: PBEWITHHMACSHA512ANDAES_256
+    password: LeapSecurityKey
