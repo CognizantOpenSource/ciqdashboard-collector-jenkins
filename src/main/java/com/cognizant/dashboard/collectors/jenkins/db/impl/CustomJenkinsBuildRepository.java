@@ -14,11 +14,12 @@ public class CustomJenkinsBuildRepository {
 
     @Autowired
     MongoTemplate template;
+	String nullVar= null;
 
     public List<JenkinsBuild> getNullResultBuilds(String jobName){
         Query query = new Query();
         query.addCriteria(Criteria.where("jobName").is(jobName));
-        query.addCriteria(Criteria.where("result").is(null));
+        query.addCriteria(Criteria.where("result").is(nullVar));
         return template.find(query, JenkinsBuild.class);
     }
 
