@@ -1,5 +1,6 @@
 package com.cognizant.dashboard.collectors.jenkins;
 
+import com.cognizant.dashboard.collectors.jenkins.config.ConfigComponent;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -18,7 +19,6 @@ public class JenkinsCollectorApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(JenkinsCollectorApplication.class, args);
-
 	}
 
 }
