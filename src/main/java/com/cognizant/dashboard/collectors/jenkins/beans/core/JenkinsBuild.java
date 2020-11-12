@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Document(collection = "jenkinsBuilds")
+@Document(collection = "source_jenkinsBuilds")
 @Data
 @CompoundIndex(name = "jobName_buildId_index", def = "{'jobName' : 1, 'number': 1}", unique = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
