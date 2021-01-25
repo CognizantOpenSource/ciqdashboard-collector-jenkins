@@ -6,6 +6,7 @@ import com.cognizant.dashboard.collectors.jenkins.db.impl.CustomJenkinsBuildRepo
 import com.cognizant.dashboard.collectors.jenkins.service.JenkinsBuildService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 
@@ -15,15 +16,17 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.cognizant.dashboard.collectors.jenkins.constant.Constant.SOURCE;
+
 @Component
 @Slf4j
 public class JenkinsBuildComponent {
     @Autowired
+    JenkinsCommonUtility commonUtility;
+    @Autowired
     JenkinsClient client;
     @Autowired
     JenkinsBuildService jenkinsBuildService;
-    @Autowired
-    JenkinsCommonUtility commonUtility;
     @Autowired
     CustomJenkinsBuildRepository customJenkinsBuildRepository;
 

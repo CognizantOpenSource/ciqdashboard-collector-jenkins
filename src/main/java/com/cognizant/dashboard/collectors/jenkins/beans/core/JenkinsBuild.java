@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Document(collection = "source_jenkinsBuilds")
+@Document(collection = "#{T(com.cognizant.dashboard.collectors.jenkins.component.JenkinsCommonUtility).getCollectionName()}")
 @Data
 @CompoundIndex(name = "jobName_buildId_index", def = "{'jobName' : 1, 'number': 1}", unique = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)

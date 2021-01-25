@@ -16,7 +16,6 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 @EnableAutoConfiguration
 @EnableEncryptableProperties
 public class JenkinsCollectorApplication {
-
 	public static void main(String[] args) {
 		SpringApplication.run(JenkinsCollectorApplication.class, args);
 	}
