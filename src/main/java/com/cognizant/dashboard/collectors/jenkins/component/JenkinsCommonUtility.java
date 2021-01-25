@@ -13,7 +13,7 @@ import static com.cognizant.dashboard.collectors.jenkins.constant.Constant.SOURC
 
 @Component
 public class JenkinsCommonUtility {
-    public static String collectionName;
+    static String collectionName;
     private final JacksonDecoder decoder = new JacksonDecoder();
     private final HttpHeaders headers = new HttpHeaders();
     @Autowired
