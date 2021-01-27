@@ -19,8 +19,8 @@ import javax.annotation.PostConstruct;
 public class JobScheduler {
     @Autowired
     private ApplicationContext appContext;
-    @Autowired
-    private ConfigurableApplicationContext context;
+//    @Autowired
+//    private ConfigurableApplicationContext context;
 
     @Value("${scheduler.enable}")
     private boolean isSchedulerEnabled;
