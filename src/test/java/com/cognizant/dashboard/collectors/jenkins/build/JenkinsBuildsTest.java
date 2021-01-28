@@ -21,9 +21,10 @@ class JenkinsBuildsTest {
     }
 
     @Test
-    void getMaxBuildNumber(){
+    void getMaxBuildNumber() {
         Assertions.assertNotNull(jenkinsBuildService);
         Integer maxBuildNumber = jenkinsBuildService.getMaxBuildNumber("Test1");
-        System.out.println(maxBuildNumber);
+//        System.out.println(maxBuildNumber);
+        Assertions.assertNotNull(maxBuildNumber);
     }
 }

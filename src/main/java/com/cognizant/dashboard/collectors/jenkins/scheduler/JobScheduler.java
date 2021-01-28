@@ -19,8 +19,8 @@ import javax.annotation.PostConstruct;
 public class JobScheduler {
     @Autowired
     private ApplicationContext appContext;
-    @Autowired
-    private ConfigurableApplicationContext context;
+//    @Autowired
+//    private ConfigurableApplicationContext context;
 
     @Value("${scheduler.enable}")
     private boolean isSchedulerEnabled;
@@ -46,7 +46,7 @@ public class JobScheduler {
     }
 
     private void validCheckToProcess() {
-        if (!isSchedulerEnabled) System.exit(0);
+        if (!isSchedulerEnabled) throw new RuntimeException();
     }
 
     @PostConstruct

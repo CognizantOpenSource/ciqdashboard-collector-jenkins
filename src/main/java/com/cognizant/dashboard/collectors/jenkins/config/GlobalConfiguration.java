@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class GlobalConfiguration {
 
-    private static final String AUTHORIZATION = "Authorization";
+//    private static final String AUTHORIZATION = "Authorization";
     @Value("${jenkins.url}")
     private String jenkinsUrl;
 
