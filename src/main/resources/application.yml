@@ -3,12 +3,12 @@ spring:
     name: dashboard-collector
   data:
     mongodb:
-      uri: mongodb://idashboard:${spring.data.mongodb.credents}@10.120.100.231/idashboard
+      uri: mongodb://ciqdashboard:${spring.data.mongodb.credents}@10.120.100.231/ciqdashboard
       credents: ENC(4litQ6Gs+nMxT88Dxa5hy8/peZ3m46Va/aeFy2vHw/PFqoBDhVseIETBNKgPnimJ)
       collection: build
 jenkins:
   url: "http://10.120.100.231:8888"
-  username: "idashboard"
+  username: "ciqdashboard"
   token : "11a5b80d5d38b6f608951d86cd2966d948"
 scheduler:
   cron: 0 0/1 * * * *
