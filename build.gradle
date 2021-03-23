@@ -6,7 +6,7 @@ plugins {
 
 group = 'com.cognizant'
 version = '0.0.1-SNAPSHOT'
-description = 'idashboard-data-collector-jenkins'
+description = 'ciqdashboard-data-collector-jenkins'
 sourceCompatibility = '11'
 
 configurations {
