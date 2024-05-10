@@ -21,6 +21,9 @@ import com.cognizant.dashboard.collectors.jenkins.db.repo.JenkinsBuildRepository
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.*;
+
 /**
  * JenkinsBuildService
  * @author Cognizant
@@ -42,4 +45,27 @@ public class JenkinsBuildService {
         return first == null ? null : first.getNumber();
     }
 
+    public List<JenkinsBuild> getAllJobBuilds() {
+        return repository.findAll();
+    }
+
+    public void delete(JenkinsBuild build) {
+        repository.delete(build);
+    }
+
+    public List<JenkinsBuild> findByJobName(String jobName) {
+        return repository.findByJobName(jobName);
+    }
+
+    public List<JenkinsBuild> getAll() {
+        return repository.findAll();
+    }
+
+    public List<JenkinsBuild> deleteByJobName(String jobName)  {
+        return repository.deleteByJobName(jobName);
+    }
+
+    public Optional<JenkinsBuild> findByUrl(String url) {
+        return repository.findByUrl(url);
+    }
 }

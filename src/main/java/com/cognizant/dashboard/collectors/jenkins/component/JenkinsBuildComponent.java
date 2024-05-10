@@ -22,17 +22,13 @@ import com.cognizant.dashboard.collectors.jenkins.db.impl.CustomJenkinsBuildRepo
 import com.cognizant.dashboard.collectors.jenkins.service.JenkinsBuildService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.*;
+import java.util.stream.*;
 
-import static com.cognizant.dashboard.collectors.jenkins.constant.Constant.SOURCE;
 /**
  * JenkinsBuildComponent - Jenkins build component
  * @author Cognizant
@@ -49,9 +45,7 @@ public class JenkinsBuildComponent {
     JenkinsBuildService jenkinsBuildService;
     @Autowired
     CustomJenkinsBuildRepository customJenkinsBuildRepository;
-
     private HttpHeaders requestHeader = new HttpHeaders();
-
     @PostConstruct
     public void postConstructMethod(){
         requestHeader = commonUtility.getHeaders();
@@ -60,6 +54,9 @@ public class JenkinsBuildComponent {
     public void getAndUpdateBuildDetails(){
         JenkinsDetails jenkins = getJobs();
         List<BaseJob> jobs = jenkins.getJobs();
+
+        removeDeletedBuildsFromDB(jobs);
+
         jobs.forEach(baseJob -> {
             JenkinsJob jenkinsJobDetails = client.getJenkinsJobDetails(baseJob.getJobName(), requestHeader);
             getJobBuilds(jenkinsJobDetails);
@@ -71,13 +68,19 @@ public class JenkinsBuildComponent {
     }
 
     public void getJobBuilds(JenkinsJob job){
-        updatePendingBuilds(job.getName());
+
+//        updatePendingBuilds(job.getName());
         List<BaseBuild> builds = job.getBuilds();
+
+        removeDeletedBuildsFromDB(job, builds);
+
         List<Integer> buildNumbers = builds.stream().map(BaseBuild::getNumber).collect(Collectors.toList());
         Collections.reverse(buildNumbers);
         Integer maxBuildNumber = jenkinsBuildService.getMaxBuildNumber(job.getName());
-        if (job.getLastBuild() != null && job.getLastBuild().getNumber() == maxBuildNumber)
-            return;
+//        if (job.getLastBuild() != null && job.getLastBuild().getNumber() == maxBuildNumber) {
+//            return;
+//        }
+
         if (maxBuildNumber != null){
             int index = buildNumbers.indexOf(maxBuildNumber);
             if (index >= 0 && index < buildNumbers.size()-1){
@@ -90,14 +93,42 @@ public class JenkinsBuildComponent {
         });
     }
 
-    public void updatePendingBuilds(String jobName) {
-        List<JenkinsBuild> builds = customJenkinsBuildRepository.getNullResultBuilds(jobName);
-        builds.forEach(build -> {
-            JenkinsBuild buildDetails = getBuildDetails(build.getJobName(), build.getJobFullName(), build.getUrl(), build.getJobDescription(), build.getNumber());
-            buildDetails.setBuildUniqueRef(build.getBuildUniqueRef());
-            saveJobBuild(buildDetails);
+    /*
+     * To remove deleted builds from DB
+     */
+    private void removeDeletedBuildsFromDB(JenkinsJob job, List<BaseBuild> builds) {
+
+        List<JenkinsBuild> jenkinsBuildsInDb = jenkinsBuildService.findByJobName(job.getName());
+
+        jenkinsBuildsInDb.forEach(buildInDb ->{
+            Stream<BaseBuild> filteredBuilds = builds.stream().filter(buildInRes -> buildInRes.getUrl().equals(buildInDb.getUrl()));
+            if(filteredBuilds.findAny().isEmpty())  {
+                jenkinsBuildService.delete(buildInDb);
+            }
         });
     }
+
+    /*
+     * To remove builds in DB for renamed and deleted jobs
+     */
+    private void removeDeletedBuildsFromDB(List<BaseJob> jobs) {
+
+        List<String> jobNamesInResponse = jobs.stream().map(BaseJob::getJobName).collect(Collectors.toList());
+        List<String> jobNamesInDB = jenkinsBuildService.getAll().stream().map(JenkinsBuild::getJobName).collect(Collectors.toList());
+
+        jobNamesInDB.removeAll(jobNamesInResponse);
+        jobNamesInDB.forEach(deletedJob -> jenkinsBuildService.deleteByJobName(deletedJob));
+
+    }
+
+//    public void updatePendingBuilds(String jobName) {
+//        List<JenkinsBuild> builds = customJenkinsBuildRepository.getNullResultBuilds(jobName);
+//        builds.forEach(build -> {
+//            JenkinsBuild buildDetails = getBuildDetails(build.getJobName(), build.getJobFullName(), build.getUrl(), build.getJobDescription(), build.getNumber());
+//            buildDetails.setBuildUniqueRef(build.getBuildUniqueRef());
+//            saveJobBuild(buildDetails);
+//        });
+//    }
 
     private JenkinsBuild getBuildDetails(String jobName, String jobFullName, String jobURL, String jobDescription, int buildNumber){
         JenkinsBuild buildDetails = client.getJenkinsBuildDetails(jobName, buildNumber, requestHeader);
@@ -110,7 +141,13 @@ public class JenkinsBuildComponent {
         return buildDetails;
     }
 
-    public JenkinsBuild saveJobBuild(JenkinsBuild buildDetails){
-        return jenkinsBuildService.save(buildDetails);
+    public void saveJobBuild(JenkinsBuild buildDetails) {
+
+        Optional<JenkinsBuild> optional= jenkinsBuildService.findByUrl(buildDetails.getUrl());
+        optional.ifPresent(build -> buildDetails.setBuildUniqueRef(build.getBuildUniqueRef()));
+
+        jenkinsBuildService.save(buildDetails);
     }
+
+
 }
